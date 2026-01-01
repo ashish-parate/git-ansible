@@ -1,0 +1,7 @@
+...
+- name: Debug Information
+  hosts: all
+  tasks:
+    - name: Print debug message
+      debug:
+        msg: "This is a debug message from the playbook."
