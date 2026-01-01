@@ -1,4 +1,46 @@
-....
-name
-: Install and Start Nginx
-hosts: webservers 
+---
+- name: Install and Start Nginx
+  hosts: webservers
+  become: true
+  tasks:
+    - name: Update apt cache (Debian/Ubuntu)
+      apt:
+        update_cache: yes
+      when: ansible_facts['os_family'] == 'Debian'
+
+    - name: Install Nginx on Debian/Ubuntu
+      apt:
+        name: nginx
+        state: present
+      when: ansible_facts['os_family'] == 'Debian'
+
+    - name: Install Nginx on RedHat/CentOS
+      yum:
+        name: nginx
+        state: present
+      when: ansible_facts['os_family'] == 'RedHat'
+
+    - name: Ensure nginx is enabled and running
+      service:
+        name: nginx
+        state: started
+        enabled: true
+
+    - name: Open HTTP in UFW (Debian/Ubuntu)
+      ufw:
+        rule: allow
+        name: 'Nginx HTTP'
+      when: ansible_facts['os_family'] == 'Debian'
+
+    - name: Open HTTP in firewalld (RHEL/CentOS)
+      firewalld:
+        service: http
+        permanent: true
+        state: enabled
+        immediate: true
+      when: ansible_facts['os_family'] == 'RedHat'
+
+    - name: Wait for nginx to listen on port 80
+      wait_for:
+        port: 80
+        timeout: 30
