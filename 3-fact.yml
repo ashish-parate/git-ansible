@@ -1,0 +1,13 @@
+---
+- name: Using facts
+  hosts: all
+  gather_facts: yes
+
+  tasks:
+    - name: Print hostname
+      debug:
+        msg: "Hostname is {{ ansible_hostname }}"
+
+    - name: Print OS
+      debug:
+        msg: "OS is {{ ansible_distribution }}"
