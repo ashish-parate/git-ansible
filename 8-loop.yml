@@ -1,0 +1,26 @@
+---
+- name: Install packages and enable services
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Install packages
+      yum:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - httpd
+        - nginx
+        - vim
+        - git
+
+    - name: Enable and start services
+      service:
+        name: "{{ item }}"
+        state: started
+        enabled: yes
+      loop:
+        - httpd
+        - nginx
+        - sshd            
+        
