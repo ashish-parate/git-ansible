@@ -1,0 +1,17 @@
+---
+- hosts: all
+  become: yes
+  vars_files:
+    - vars.yml
+
+  tasks:
+    - yum:
+        name: "{{ package_name }}"
+        state: present
+
+    - service:
+        name: "{{ service_name }}"
+        state: started
+        enabled: yes
+
+    
